@@ -2,7 +2,7 @@ services:
   - type: web
     name: shree-reempu-cloud
     runtime: python
-    plan: starter
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn stream:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -18,4 +18,4 @@ services:
       - key: STREAM_API_TOKEN
         sync: false
       - key: MAX_VIDEO_BYTES
-        value: "21474836480"
+        value: "5000000000"
