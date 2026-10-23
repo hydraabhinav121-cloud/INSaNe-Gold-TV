@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -239,6 +240,12 @@ private fun GoldSplash() {
         animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "drift"
     )
+    val orbit by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(7200, easing = LinearEasing), RepeatMode.Restart),
+        label = "orbit"
+    )
     var revealed by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { delay(180); revealed = true }
 
@@ -287,6 +294,24 @@ private fun GoldSplash() {
                     contentAlignment = Alignment.Center
                 ) {
                     Canvas(Modifier.fillMaxSize()) {
+                        drawArc(
+                            color = Gold.copy(alpha = .55f + glow * .25f),
+                            startAngle = orbit,
+                            sweepAngle = 76f,
+                            useCenter = false,
+                            topLeft = Offset(size.width * .035f, size.height * .035f),
+                            size = Size(size.width * .93f, size.height * .93f),
+                            style = Stroke(width = 2.2.dp.toPx())
+                        )
+                        drawArc(
+                            color = Color.White.copy(alpha = .20f),
+                            startAngle = orbit + 180f,
+                            sweepAngle = 38f,
+                            useCenter = false,
+                            topLeft = Offset(size.width * .075f, size.height * .075f),
+                            size = Size(size.width * .85f, size.height * .85f),
+                            style = Stroke(width = 1.dp.toPx())
+                        )
                         drawCircle(
                             color = Gold.copy(alpha = .10f + glow * .08f),
                             radius = size.minDimension * .47f,
