@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.sp
 private val Gold = Color(0xFFFFD36A)
 private val Background = Color(0xFF090A0D)
 private val Panel = Color(0xFF17191F)
-private val Categories = listOf("All", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
+private val Categories = listOf("All", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "My Cloud", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
 
 private data class Channel(val title: String, val category: String, val description: String, val url: String) {
     val id: String get() = title
@@ -453,7 +453,9 @@ private fun GoldTvHome(context: Context) {
             Text(visible.size.toString() + " sources", color = Color.Gray, fontSize = 11.sp)
         }
         Spacer(Modifier.height(8.dp))
-        if (visible.isEmpty()) {
+        if (selectedCategory == "My Cloud") {
+            CloudLibraryScreen(context)
+        } else if (visible.isEmpty()) {
             Text("No matches yet. Try another search or category.", color = Color.LightGray, modifier = Modifier.padding(12.dp))
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(bottom = 8.dp)) {
