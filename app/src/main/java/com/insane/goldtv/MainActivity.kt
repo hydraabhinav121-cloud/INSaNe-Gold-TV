@@ -72,13 +72,29 @@ import androidx.compose.ui.unit.sp
 private val Gold = Color(0xFFFFD36A)
 private val Background = Color(0xFF090A0D)
 private val Panel = Color(0xFF17191F)
-private val Categories = listOf("All", "Streaming", "Bhojpuri", "Bigg Boss", "IPL", "Free Documentaries", "Comedy", "Radio & Music", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
+private val Categories = listOf("All", "Aarti & Bhajan", "Birthday Special", "Streaming", "Bhojpuri", "Bigg Boss", "IPL", "Free Documentaries", "Comedy", "Radio & Music", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
 
 private data class Channel(val title: String, val category: String, val description: String, val url: String) {
     val id: String get() = title
 }
 
 private val catalogue = listOf(
+    Channel("Ganesh Ji Ki Aarti", "Aarti & Bhajan", "Jai Ganesh Deva — devotional video results", "https://www.youtube.com/results?search_query=Jai+Ganesh+Deva+aarti+official"),
+    Channel("Ambe Maa Ki Aarti", "Aarti & Bhajan", "Jai Ambe Gauri — devotional video results", "https://www.youtube.com/results?search_query=Jai+Ambe+Gauri+aarti+T+Series+Bhakti"),
+    Channel("Hanuman Chalisa", "Aarti & Bhajan", "Hanuman Chalisa devotional videos", "https://www.youtube.com/results?search_query=Hanuman+Chalisa+official+devotional+video"),
+    Channel("Lakshmi Ji Ki Aarti", "Aarti & Bhajan", "Om Jai Lakshmi Mata — devotional video results", "https://www.youtube.com/results?search_query=Om+Jai+Lakshmi+Mata+aarti+official"),
+    Channel("Saraswati Ji Ki Aarti", "Aarti & Bhajan", "Jai Saraswati Mata — devotional video results", "https://www.youtube.com/results?search_query=Jai+Saraswati+Mata+aarti+official"),
+    Channel("Parvati Mata Ki Aarti", "Aarti & Bhajan", "Om Jai Parvati Mata — devotional video results", "https://www.youtube.com/results?search_query=Om+Jai+Parvati+Mata+aarti+official"),
+    Channel("Riddhi-Siddhi Mata Bhajan", "Aarti & Bhajan", "Devotional songs for Ganesh Ji's consorts Riddhi and Siddhi", "https://www.youtube.com/results?search_query=Riddhi+Siddhi+Mata+bhajan+aarti"),
+    Channel("Complete Aarti Sangrah", "Aarti & Bhajan", "Aarti collection featuring Ganesh, Ambe, Lakshmi, Parvati and Saraswati", "https://www.youtube.com/watch?v=NSczq67qpng"),
+    Channel("Shiv Ji Ki Aarti", "Aarti & Bhajan", "Om Jai Shiv Omkara — devotional video results", "https://www.youtube.com/results?search_query=Om+Jai+Shiv+Omkara+aarti+official"),
+    Channel("Om Jai Jagdish Hare", "Aarti & Bhajan", "Vishnu Ji ki aarti and devotional videos", "https://www.youtube.com/results?search_query=Om+Jai+Jagdish+Hare+aarti+official"),
+    Channel("Birthday Songs Hindi", "Birthday Special", "Hindi birthday songs and video celebrations", "https://www.youtube.com/results?search_query=Hindi+birthday+song+official+music+video"),
+    Channel("Happy Birthday Songs", "Birthday Special", "Classic Happy Birthday songs and video versions", "https://www.youtube.com/results?search_query=Happy+Birthday+song+official+music+video"),
+    Channel("Bollywood Birthday Songs", "Birthday Special", "Birthday-themed Bollywood songs from official music channels", "https://www.youtube.com/results?search_query=Bollywood+birthday+song+official+music+video"),
+    Channel("Birthday Songs for Kids", "Birthday Special", "Fun birthday songs and animated videos for children", "https://www.youtube.com/results?search_query=kids+birthday+song+official+animation"),
+    Channel("Birthday Party Music", "Birthday Special", "Party songs and birthday celebration playlists", "https://www.youtube.com/results?search_query=birthday+party+songs+official+playlist"),
+    Channel("Birthday Instrumentals", "Birthday Special", "Instrumental birthday music and celebration backgrounds", "https://www.youtube.com/results?search_query=Happy+Birthday+instrumental+official"),
     Channel("DD News", "News", "Official news videos and live coverage", "https://www.youtube.com/@DDNewsOfficial"),
     Channel("Sansad TV", "News", "Parliament coverage and public affairs", "https://www.youtube.com/@SansadTV"),
     Channel("Aaj Tak", "News", "Official news videos and live coverage", "https://www.youtube.com/@AajTak"),
@@ -318,7 +334,7 @@ private fun GoldSplash() {
                     )
                     Spacer(Modifier.height(15.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        listOf("CINEMA", "LIVE", "MUSIC").forEach { label ->
+                        listOf("AARTI", "BIRTHDAY", "CINEMA", "LIVE", "MUSIC").forEach { label ->
                             Box(
                                 Modifier.clip(RoundedCornerShape(50))
                                     .background(Color(0xFF2B2416))
@@ -336,10 +352,10 @@ private fun GoldSplash() {
                     )
                     Spacer(Modifier.height(15.dp))
                     Text(
-                        "A GOLDEN WORLD OF ENTERTAINMENT",
-                        color = Color.White.copy(alpha = .68f),
+                        "BHAKTI  •  CELEBRATION  •  ENTERTAINMENT",
+                        color = Color.White.copy(alpha = .78f),
                         fontSize = 9.sp,
-                        letterSpacing = 1.6.sp
+                        letterSpacing = 1.25.sp
                     )
                 }
             }
