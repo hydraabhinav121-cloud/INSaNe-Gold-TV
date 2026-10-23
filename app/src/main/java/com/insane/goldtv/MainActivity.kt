@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.sp
 private val Gold = Color(0xFFFFD36A)
 private val Background = Color(0xFF090A0D)
 private val Panel = Color(0xFF17191F)
-private val Categories = listOf("All", "Streaming", "Bhojpuri", "Bigg Boss", "IPL", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
+private val Categories = listOf("All", "Streaming", "Bhojpuri", "Bigg Boss", "IPL", "Free Documentaries", "Comedy", "Radio & Music", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
 
 private data class Channel(val title: String, val category: String, val description: String, val url: String) {
     val id: String get() = title
@@ -139,6 +139,20 @@ private val catalogue = listOf(
     Channel("IPL Official Videos", "IPL", "Official IPL clips and highlights; not a guaranteed free live match stream", "https://www.youtube.com/results?search_query=IPL+official+highlights"),
     Channel("Star Sports India", "IPL", "Official sports clips and match coverage; live broadcast rights apply", "https://www.youtube.com/@StarSportsIndia"),
     Channel("JioHotstar Sports", "IPL", "Check official cricket streaming availability; subscriptions or regional limits may apply", "https://www.jiohotstar.com/"),
+    Channel("Free Nature Documentaries", "Free Documentaries", "Official nature and wildlife documentaries and clips", "https://www.youtube.com/@NatGeo"),
+    Channel("PBS Nature", "Free Documentaries", "Nature documentary clips from the public broadcaster", "https://www.youtube.com/results?search_query=PBS+Nature+official"),
+    Channel("NFB Documentaries", "Free Documentaries", "Free films and documentaries from Canada's National Film Board", "https://www.nfb.ca/"),
+    Channel("NASA Space Videos", "Free Documentaries", "Official space missions, Earth views and science documentaries", "https://www.youtube.com/@NASA"),
+    Channel("TED Talks", "Free Documentaries", "Talks and explainers across science, culture and ideas", "https://www.youtube.com/@TED"),
+    Channel("Shemaroo Comedy", "Comedy", "Official comedy scenes and entertainment clips", "https://www.youtube.com/@ShemarooComedy"),
+    Channel("Sony SAB Comedy", "Comedy", "Official comedy and family entertainment clips", "https://www.youtube.com/@SonySAB"),
+    Channel("Hindi Comedy Clips", "Comedy", "Search official studio channels for comedy scenes", "https://www.youtube.com/results?search_query=Hindi+comedy+official+channel"),
+    Channel("Stand-up Comedy India", "Comedy", "Stand-up clips from official comedians and publishers", "https://www.youtube.com/results?search_query=Indian+standup+comedy+official"),
+    Channel("All India Radio", "Radio & Music", "Official radio programmes and music; availability varies", "https://prasarbharati.gov.in/"),
+    Channel("Saregama Classics", "Radio & Music", "Hindi classics and curated music from the official label", "https://www.youtube.com/@saregama"),
+    Channel("Lofi & Relaxing Music", "Radio & Music", "Find official, licensed relaxation and instrumental music", "https://www.youtube.com/results?search_query=official+lofi+relaxing+music"),
+    Channel("Bhajan Radio", "Radio & Music", "Official devotional music collections and bhajans", "https://www.youtube.com/results?search_query=official+bhajan+music"),
+    Channel("Free Audiovisual Archive", "Free Documentaries", "Browse archive films and verify rights on each title", "https://archive.org/details/movies"),
     Channel("WAVES by Prasar Bharati", "Free Movies", "Public broadcaster streaming hub; free and premium availability can vary", "https://wavespb.com/"),
     Channel("WAVES Free Streaming", "Streaming", "Public broadcaster movies, shows and live channels; some titles may be premium", "https://wavespb.com/"),
     Channel("Amazon MX Player / Prime Video", "Streaming", "Browse free ad-supported movies and shows where available", "https://www.primevideo.com/"),
