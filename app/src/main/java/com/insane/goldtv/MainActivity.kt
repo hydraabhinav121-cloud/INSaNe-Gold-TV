@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.sp
 private val Gold = Color(0xFFFFD36A)
 private val Background = Color(0xFF090A0D)
 private val Panel = Color(0xFF17191F)
-private val Categories = listOf("All", "Live TV", "News", "Sports", "Movies", "Cartoons", "Anime", "My List")
+private val Categories = listOf("All", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Music", "Learning", "My List")
 
 private data class Channel(val title: String, val category: String, val description: String, val url: String) {
     val id: String get() = title
@@ -95,7 +95,38 @@ private val catalogue = listOf(
     Channel("Ani-One Asia", "Anime", "Official anime channel; availability varies by region", "https://www.youtube.com/@AniOneAsia"),
     Channel("Rajshri", "Movies", "Official Indian films and music", "https://www.youtube.com/@Rajshri"),
     Channel("Internet Archive Films", "Movies", "Public-domain and community film collection; check each title's rights", "https://archive.org/details/feature_films"),
-    Channel("National Film Board", "Movies", "Official free films and documentaries", "https://www.youtube.com/@NFB")
+    Channel("National Film Board", "Movies", "Official free films and documentaries", "https://www.youtube.com/@NFB"),
+    Channel("India TV", "Live TV", "News updates and coverage on its official channel", "https://www.youtube.com/@IndiaTV"),
+    Channel("Republic Bharat", "Live TV", "Hindi news and current affairs", "https://www.youtube.com/@RepublicBharat"),
+    Channel("News18 India", "Live TV", "Hindi news and current affairs", "https://www.youtube.com/@News18India"),
+    Channel("TV9 Bharatvarsh", "Live TV", "Hindi news and coverage", "https://www.youtube.com/@TV9Bharatvarsh"),
+    Channel("DD National", "Live TV", "Doordarshan programmes and official videos", "https://www.youtube.com/@DoordarshanNational"),
+    Channel("Sanskar TV", "Devotional", "Bhajans, satsang and spiritual programmes", "https://www.youtube.com/@SanskarTV"),
+    Channel("Aastha Bhajan", "Devotional", "Bhajans and devotional programmes", "https://www.youtube.com/@AasthaBhajan"),
+    Channel("Shemaroo Bhakti", "Devotional", "Bhajans, aartis and devotional music", "https://www.youtube.com/@ShemarooBhakti"),
+    Channel("T-Series Bhakti Sagar", "Devotional", "Devotional songs and aartis", "https://www.youtube.com/@TSeriesBhaktiSagar"),
+    Channel("Saregama Bhakti", "Devotional", "Devotional music and bhajans", "https://www.youtube.com/@SaregamaBhakti"),
+    Channel("Bhakti Songs", "Devotional", "Find official devotional song collections", "https://www.youtube.com/results?search_query=official+bhakti+songs"),
+    Channel("Shemaroo Kids", "Hindi Kids", "Children's stories, rhymes and animation", "https://www.youtube.com/@ShemarooKids"),
+    Channel("Infobells Hindi", "Hindi Kids", "Hindi rhymes and children's animation", "https://www.youtube.com/@infobellshindi"),
+    Channel("Jingle Toons", "Hindi Kids", "Hindi nursery rhymes and kids stories", "https://www.youtube.com/@JingleToons"),
+    Channel("Hindi Fairy Tales", "Hindi Kids", "Hindi story and fairy-tale videos", "https://www.youtube.com/results?search_query=official+hindi+fairy+tales+kids"),
+    Channel("Sony SAB", "Cartoons", "Family comedy and entertainment clips", "https://www.youtube.com/@SonySAB"),
+    Channel("Shemaroo Comedy", "Movies", "Comedy scenes and family entertainment", "https://www.youtube.com/@ShemarooComedy"),
+    Channel("T-Series", "Music", "Official Hindi music videos and film songs", "https://www.youtube.com/@tseries"),
+    Channel("Zee Music Company", "Music", "Official Hindi songs and music videos", "https://www.youtube.com/@zeemusiccompany"),
+    Channel("Saregama Music", "Music", "Hindi classics and official music releases", "https://www.youtube.com/@saregama"),
+    Channel("Sony Music India", "Music", "Official Indian music videos", "https://www.youtube.com/@SonyMusicIndia"),
+    Channel("Tips Official", "Music", "Official songs and music videos", "https://www.youtube.com/@TipsOfficial"),
+    Channel("National Geographic", "Learning", "Nature, science and educational videos", "https://www.youtube.com/@NatGeo"),
+    Channel("NASA", "Learning", "Space science, missions and educational videos", "https://www.youtube.com/@NASA"),
+    Channel("Khan Academy", "Learning", "Free educational lessons and explainers", "https://www.youtube.com/@khanacademy"),
+    Channel("TED-Ed", "Learning", "Animated educational lessons for curious minds", "https://www.youtube.com/@TEDEd"),
+    Channel("Muse Asia", "Anime", "Official anime uploads; titles vary by region", "https://www.youtube.com/@MuseAsia"),
+    Channel("Pogo", "Cartoons", "Official kids entertainment clips; availability varies", "https://www.youtube.com/results?search_query=Pogo+official+cartoons"),
+    Channel("Cartoon Network India", "Cartoons", "Official cartoon clips and kids entertainment", "https://www.youtube.com/results?search_query=Cartoon+Network+India+official"),
+    Channel("Prasar Bharati Archives", "Movies", "Classic Indian television and archive programmes", "https://www.youtube.com/@PrasarBharatiArchives"),
+    Channel("Internet Archive Documentaries", "Movies", "Documentaries and films; check individual rights and availability", "https://archive.org/details/movies")
 )
 
 class MainActivity : ComponentActivity() {
@@ -341,7 +372,7 @@ private fun GoldTvHome(context: Context) {
     Column(
         modifier = Modifier.fillMaxSize()
             .background(Brush.verticalGradient(listOf(Color(0xFF242016), Background)))
-            .padding(start = 36.dp, end = 36.dp, top = 20.dp, bottom = 16.dp)
+            .padding(start = 30.dp, end = 30.dp, top = 12.dp, bottom = 10.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Text("SHREE REEMPU DEVI", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Black)
@@ -350,11 +381,11 @@ private fun GoldTvHome(context: Context) {
             Spacer(Modifier.weight(1f))
             Text("FREE ENTERTAINMENT HUB", color = Color.LightGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         }
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
                 .background(Panel).border(1.dp, Color(0xFF6F5726), RoundedCornerShape(14.dp))
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 14.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("⌕", color = Gold, fontSize = 24.sp)
@@ -373,29 +404,29 @@ private fun GoldTvHome(context: Context) {
                 Text("CLEAR", color = Gold, fontSize = 12.sp, modifier = Modifier.clickable { search = "" }.focusable().padding(6.dp))
             }
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(6.dp))
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(vertical = 4.dp)) {
             items(Categories) { category ->
                 FocusTile(title = category, selected = selectedCategory == category, onClick = { selectedCategory = category })
             }
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(6.dp))
         Row(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
                 .background(Brush.horizontalGradient(listOf(Color(0xFF3B2D12), Panel, Color(0xFF111318))))
-                .border(1.dp, Color(0xFF8E6B26), RoundedCornerShape(18.dp)).padding(20.dp),
+                .border(1.dp, Color(0xFF8E6B26), RoundedCornerShape(18.dp)).padding(horizontal = 16.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
                 Text("A GOLDEN WORLD OF ENTERTAINMENT", color = Gold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(6.dp))
-                Text("Discover something free.", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.ExtraBold)
+                Text("Watch • Explore • Enjoy", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
                 Spacer(Modifier.height(5.dp))
                 Text("Official sources • Family-friendly discovery • No app subscription", color = Color.LightGray, fontSize = 13.sp)
             }
             Text("✦", color = Gold, fontSize = 42.sp)
         }
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(if (selectedCategory == "My List") "MY LIST" else if (search.isNotBlank()) "SEARCH RESULTS" else "EXPLORE " + selectedCategory.uppercase(), color = Gold, fontSize = 13.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.weight(1f))
