@@ -135,6 +135,31 @@ fun InAppStreamingScreen(
                         settings.javaScriptCanOpenWindowsAutomatically = false
                         settings.setSupportMultipleWindows(false)
                         settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+                        // YouTube search results get a simple D-pad focus model for TV remotes.
+                        if (url.contains("youtube.com/results") || url.contains("youtube.com/shorts")) {
+                            setOnKeyListener { _, keyCode, event ->
+                                if (event?.action != android.view.KeyEvent.ACTION_DOWN) {
+                                    false
+                                } else {
+                                    when (keyCode) {
+                                        android.view.KeyEvent.KEYCODE_DPAD_DOWN -> {
+                                            evaluateJavascript("window.__goldTvMoveFocus && window.__goldTvMoveFocus(1)", null)
+                                            true
+                                        }
+                                        android.view.KeyEvent.KEYCODE_DPAD_UP -> {
+                                            evaluateJavascript("window.__goldTvMoveFocus && window.__goldTvMoveFocus(-1)", null)
+                                            true
+                                        }
+                                        android.view.KeyEvent.KEYCODE_DPAD_CENTER,
+                                        android.view.KeyEvent.KEYCODE_ENTER -> {
+                                            evaluateJavascript("window.__goldTvActivate && window.__goldTvActivate()", null)
+                                            true
+                                        }
+                                        else -> false
+                                    }
+                                }
+                            }
+                        }
                         webChromeClient = object : WebChromeClient() {
                             override fun onProgressChanged(view: WebView, newProgress: Int) {
                                 pageProgress = newProgress
@@ -149,6 +174,37 @@ fun InAppStreamingScreen(
                             override fun onPageFinished(view: WebView, url: String?) {
                                 pageLoading = false
                                 pageProgress = 100
+                                if (url?.contains("youtube.com/results") == true || url?.contains("youtube.com/shorts") == true) {
+                                    view.evaluateJavascript("""
+                                        (function() {
+                                          window.__goldTvIndex = -1;
+                                          window.__goldTvLinks = function() {
+                                            return Array.from(document.querySelectorAll('a[href*="/watch?v="], a[href*="/shorts/"]'))
+                                              .filter(function(a) {
+                                                var r = a.getBoundingClientRect();
+                                                return r.width > 0 && r.height > 0 && a.href && !a.href.includes('googleads');
+                                              });
+                                          };
+                                          window.__goldTvMoveFocus = function(direction) {
+                                            var links = window.__goldTvLinks();
+                                            if (!links.length) return;
+                                            window.__goldTvIndex = Math.max(0, Math.min(links.length - 1, window.__goldTvIndex + direction));
+                                            links.forEach(function(a) { a.style.outline = ''; a.style.outlineOffset = ''; });
+                                            var target = links[window.__goldTvIndex];
+                                            target.setAttribute('tabindex', '0');
+                                            target.style.outline = '3px solid #FFD36A';
+                                            target.style.outlineOffset = '3px';
+                                            target.focus({preventScroll: true});
+                                            target.scrollIntoView({block: 'center', behavior: 'auto'});
+                                          };
+                                          window.__goldTvActivate = function() {
+                                            var links = window.__goldTvLinks();
+                                            var target = links[window.__goldTvIndex];
+                                            if (target) target.click();
+                                          };
+                                        })();
+                                    """.trimIndent(), null)
+                                }
                             }
                             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                                 val scheme = request.url.scheme?.lowercase()
