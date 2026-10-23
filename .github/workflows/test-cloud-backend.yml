@@ -1,0 +1,35 @@
+name: Test cloud backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "stream.py"
+      - "requirements.txt"
+      - ".github/workflows/test-cloud-backend.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install backend dependencies
+        run: pip install -r requirements.txt
+      - name: Check Python syntax
+        run: python -m compileall -q stream.py
+      - name: Smoke-test API registration
+        run: |
+          python - <<'PY'
+          from stream import app, health
+          assert health()["ok"] is True
+          paths = {route.path for route in app.routes}
+          required = {"/health", "/", "/api/videos", "/api/uploads", "/api/uploads/{video_id}/complete", "/api/videos/{video_id}/play", "/api/videos/{video_id}"}
+          missing = required - paths
+          assert not missing, f"Missing API routes: {missing}"
+          print("Cloud backend import, health check, and route registration passed.")
+          PY
