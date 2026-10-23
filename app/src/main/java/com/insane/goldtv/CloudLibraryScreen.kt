@@ -112,7 +112,7 @@ fun CloudLibraryScreen(context: Context) {
             }
             videos = result
             message = if (result.isEmpty()) "Connected successfully. Upload a video from your phone to see it here."
-                else "Connected · \${result.size} video(s) in your cloud."
+                else "Connected · ${result.size} video(s) in your cloud."
         } catch (error: Exception) {
             message = error.message ?: "Could not connect. Check the URL, token, and internet connection."
         } finally {
@@ -158,7 +158,7 @@ fun CloudLibraryScreen(context: Context) {
         Text(message, color = gold, fontSize = 13.sp)
         if (selectedVideo != null) {
             val playing = selectedVideo!!
-            Text("NOW PLAYING · \${playing.title}", color = Color.White, fontSize = 18.sp)
+            Text("NOW PLAYING · ${playing.title}", color = Color.White, fontSize = 18.sp)
             val player = remember(playing.playUrl) {
                 ExoPlayer.Builder(context).build().apply {
                     setMediaItem(MediaItem.fromUri(playing.playUrl))
@@ -194,7 +194,7 @@ fun CloudLibraryScreen(context: Context) {
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(video.title, color = Color.White, fontSize = 17.sp)
-                Text("\${video.filename} · \${formatCloudSize(video.sizeBytes)}", color = Color.LightGray, fontSize = 12.sp)
+                Text("${video.filename} · ${formatCloudSize(video.sizeBytes)}", color = Color.LightGray, fontSize = 12.sp)
                 Button(
                     onClick = {
                         if (video.playUrl.isBlank()) {
