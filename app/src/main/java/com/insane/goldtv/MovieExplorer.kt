@@ -271,12 +271,12 @@ private fun openExternal(context: Context, url: String) {
 
 private fun fetchDiscoveryTitles(apiKey: String, path: String, series: Boolean): List<DiscoveryTitle> {
     val separator = if (path.contains("?")) "&" else "?"
-    val url = URL("https://api.themoviedb.org/3$path${separator}language=en-US&region=IN")
+    val encodedKey = URLEncoder.encode(apiKey, "UTF-8")
+    val url = URL("https://api.themoviedb.org/3$path${separator}api_key=$encodedKey&language=en-US&region=IN")
     val connection = (url.openConnection() as HttpURLConnection).apply {
         requestMethod = "GET"
         connectTimeout = 10000
         readTimeout = 10000
-        setRequestProperty("Authorization", "Bearer $apiKey")
         setRequestProperty("accept", "application/json")
     }
     try {
