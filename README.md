@@ -17,7 +17,7 @@ The old TMDB Movie Explorer has been removed. This project does not use TMDB API
 
 The new `stream.py` service gives you a private personal video library backed by a **private Cloudflare R2 bucket**. You can open the service's web page on your phone, choose a video and upload it directly to cloud storage. Open the same page on another device, enter the same private access token, and stream or delete videos. The service generates short-lived signed upload/play URLs; it does not make your bucket public.
 
-**Important:** this commit adds the cloud backend and a mobile-friendly browser upload/playback page. It does **not yet wire the native Android TV app's menus/player directly to the cloud API**. Until that native integration is added, use the deployed cloud page in a phone/TV browser. The existing APK workflow builds the Android app only, not the Python service.
+**Native TV integration is included:** choose **My Cloud** in the Android TV app, enter your deployed HTTPS service URL and private token, then connect and play a listed video in the app. On your phone, open the deployed service root page to upload and manage videos. The APK workflow builds the Android app; Render deploys the Python service.
 
 ### 1. Create your cloud bucket
 
@@ -87,7 +87,7 @@ All library/upload/delete endpoints require `Authorization: Bearer YOUR_STREAM_A
 ## Current limitations
 
 - Cloudflare R2 and Render accounts, bucket, credentials, and service environment variables must be configured by you; GitHub cannot create these accounts or secret values for you.
-- Native in-app Android TV cloud browsing/playback and Android phone picker integration are not wired yet; the included browser page is the first working client.
+- The Android TV app has a native cloud-library list and Media3 playback screen. Phone uploads use the mobile-friendly browser page rather than a separate phone-app upload screen.
 - Uploads currently use a single signed PUT. Large or interrupted uploads do not resume automatically.
 - Original videos are streamed without transcoding. Device codec support varies.
 - Cloud storage and bandwidth can cost money. Check current provider pricing before uploading a large library.
