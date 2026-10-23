@@ -21,6 +21,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -28,6 +29,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -200,7 +203,12 @@ private fun GoldSplash() {
                             style = Stroke(width = 1.dp.toPx())
                         )
                     }
-                    TvMark(Modifier.size(94.dp), glow)
+                    Image(
+                        painter = painterResource(id = R.drawable.app_icon),
+                        contentDescription = "Shree Reempu Devi TV app icon",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(112.dp).clip(RoundedCornerShape(24.dp))
+                    )
                 }
             }
             Spacer(Modifier.height(26.dp))
