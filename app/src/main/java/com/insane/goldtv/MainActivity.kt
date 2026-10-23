@@ -211,19 +211,19 @@ private fun GoldSplash() {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        "I N S A N E",
+                        "SHREE REEMPU DEVI",
                         color = Color.White,
-                        fontSize = 27.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 6.sp
+                        letterSpacing = 2.5.sp
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "G O L D   T V",
+                        "T V",
                         color = Gold,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 4.sp
+                        fontSize = 23.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 9.sp
                     )
                     Spacer(Modifier.height(19.dp))
                     Box(
@@ -232,7 +232,7 @@ private fun GoldSplash() {
                     )
                     Spacer(Modifier.height(15.dp))
                     Text(
-                        "YOUR ENTERTAINMENT. YOUR GOLD STANDARD.",
+                        "A GOLDEN WORLD OF ENTERTAINMENT",
                         color = Color.White.copy(alpha = .68f),
                         fontSize = 9.sp,
                         letterSpacing = 1.6.sp
@@ -336,9 +336,9 @@ private fun GoldTvHome(context: Context) {
             .padding(start = 36.dp, end = 36.dp, top = 20.dp, bottom = 16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Text("INSaNe", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+            Text("SHREE REEMPU DEVI", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Black)
             Spacer(Modifier.width(8.dp))
-            Text("GOLD TV", color = Gold, fontSize = 28.sp, fontWeight = FontWeight.Black)
+            Text("TV", color = Gold, fontSize = 28.sp, fontWeight = FontWeight.Black)
             Spacer(Modifier.weight(1f))
             Text("FREE ENTERTAINMENT HUB", color = Color.LightGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         }
@@ -379,7 +379,7 @@ private fun GoldTvHome(context: Context) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
-                Text("YOUR ENTERTAINMENT. YOUR GOLD STANDARD.", color = Gold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                Text("A GOLDEN WORLD OF ENTERTAINMENT", color = Gold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(6.dp))
                 Text("Discover something free.", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.ExtraBold)
                 Spacer(Modifier.height(5.dp))
