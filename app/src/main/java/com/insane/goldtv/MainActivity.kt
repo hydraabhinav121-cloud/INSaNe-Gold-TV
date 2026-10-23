@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.sp
 private val Gold = Color(0xFFFFD36A)
 private val Background = Color(0xFF090A0D)
 private val Panel = Color(0xFF17191F)
-private val Categories = listOf("All", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "My Cloud", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
+private val Categories = listOf("All", "Streaming", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
 
 private data class Channel(val title: String, val category: String, val description: String, val url: String) {
     val id: String get() = title
@@ -128,6 +128,12 @@ private val catalogue = listOf(
     Channel("Prasar Bharati Archives", "Movies", "Classic Indian television and archive programmes", "https://www.youtube.com/@PrasarBharatiArchives"),
     Channel("Internet Archive Documentaries", "Movies", "Documentaries and films; check individual rights and availability", "https://archive.org/details/movies"),
     Channel("WAVES by Prasar Bharati", "Free Movies", "Public broadcaster streaming hub; free and premium availability can vary", "https://wavespb.com/"),
+    Channel("WAVES Free Streaming", "Streaming", "Public broadcaster movies, shows and live channels; some titles may be premium", "https://wavespb.com/"),
+    Channel("Amazon MX Player / Prime Video", "Streaming", "Browse free ad-supported movies and shows where available", "https://www.primevideo.com/"),
+    Channel("SonyLIV Free", "Streaming", "Official streaming service; selected episodes and titles may be free", "https://www.sonyliv.com/"),
+    Channel("ZEE5 Free", "Streaming", "Open the official catalogue and look for free titles", "https://www.zee5.com/"),
+    Channel("TVF Play", "Streaming", "Official TVF web series and entertainment; availability varies", "https://tvfplay.com/"),
+    Channel("YouTube Official Movies", "Streaming", "Find full films uploaded by official studios and rights holders", "https://www.youtube.com/results?search_query=official+full+movie+studio"),
     Channel("ZEE5 Movies", "Free Movies", "Browse official movie catalogue and check which titles are marked free", "https://www.zee5.com/movies"),
     Channel("Prime Video India", "Free Movies", "Browse licensed films; only some titles may be free with ads", "https://www.primevideo.com/"),
     Channel("Rajshri Movies", "Free Movies", "Official studio catalogue with selected full films; title availability varies", "https://www.youtube.com/@Rajshri"),
@@ -453,9 +459,7 @@ private fun GoldTvHome(context: Context) {
             Text(visible.size.toString() + " sources", color = Color.Gray, fontSize = 11.sp)
         }
         Spacer(Modifier.height(8.dp))
-        if (selectedCategory == "My Cloud") {
-            CloudLibraryScreen(context)
-        } else if (visible.isEmpty()) {
+        if (visible.isEmpty()) {
             Text("No matches yet. Try another search or category.", color = Color.LightGray, modifier = Modifier.padding(12.dp))
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(bottom = 8.dp)) {
