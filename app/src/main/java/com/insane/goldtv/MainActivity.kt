@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.sp
 private val Gold = Color(0xFFFFD36A)
 private val Background = Color(0xFF090A0D)
 private val Panel = Color(0xFF17191F)
-private val Categories = listOf("All", "Streaming", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
+private val Categories = listOf("All", "Streaming", "Bhojpuri", "Bigg Boss", "IPL", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
 
 private data class Channel(val title: String, val category: String, val description: String, val url: String) {
     val id: String get() = title
@@ -127,6 +127,18 @@ private val catalogue = listOf(
     Channel("Cartoon Network India", "Cartoons", "Official cartoon clips and kids entertainment", "https://www.youtube.com/results?search_query=Cartoon+Network+India+official"),
     Channel("Prasar Bharati Archives", "Movies", "Classic Indian television and archive programmes", "https://www.youtube.com/@PrasarBharatiArchives"),
     Channel("Internet Archive Documentaries", "Movies", "Documentaries and films; check individual rights and availability", "https://archive.org/details/movies"),
+    Channel("Wave Music Bhojpuri", "Bhojpuri", "Bhojpuri songs and videos from the music label's official YouTube results", "https://www.youtube.com/results?search_query=Wave+Music+Bhojpuri+official"),
+    Channel("Worldwide Records Bhojpuri", "Bhojpuri", "Bhojpuri music and movie songs from the label's official uploads", "https://www.youtube.com/results?search_query=Worldwide+Records+Bhojpuri+official"),
+    Channel("T-Series Hamaar Bhojpuri", "Bhojpuri", "Bhojpuri music and entertainment; browse official uploads", "https://www.youtube.com/results?search_query=T-Series+Hamaar+Bhojpuri+official"),
+    Channel("Enterr10 Rangeela", "Bhojpuri", "Bhojpuri entertainment and movie content; availability varies", "https://www.youtube.com/results?search_query=Enterr10+Rangeela+official"),
+    Channel("Bhojpuri Full Movies", "Bhojpuri", "Find full films uploaded by official studios and rights holders", "https://www.youtube.com/results?search_query=Bhojpuri+full+movie+official+studio"),
+    Channel("Bigg Boss Official", "Bigg Boss", "Official Bigg Boss clips and updates; full episodes may require a subscription", "https://www.youtube.com/results?search_query=Bigg+Boss+official+Colors+TV"),
+    Channel("Colors TV", "Bigg Boss", "Official Colors TV videos and Bigg Boss clips; full live episodes may be restricted", "https://www.youtube.com/@colorstv"),
+    Channel("Bigg Boss on JioHotstar", "Bigg Boss", "Check official availability; some episodes or seasons may require a subscription", "https://www.jiohotstar.com/"),
+    Channel("IPL Official", "IPL", "Official IPL highlights, news and match updates; live coverage may be restricted", "https://www.iplt20.com/"),
+    Channel("IPL Official Videos", "IPL", "Official IPL clips and highlights; not a guaranteed free live match stream", "https://www.youtube.com/results?search_query=IPL+official+highlights"),
+    Channel("Star Sports India", "IPL", "Official sports clips and match coverage; live broadcast rights apply", "https://www.youtube.com/@StarSportsIndia"),
+    Channel("JioHotstar Sports", "IPL", "Check official cricket streaming availability; subscriptions or regional limits may apply", "https://www.jiohotstar.com/"),
     Channel("WAVES by Prasar Bharati", "Free Movies", "Public broadcaster streaming hub; free and premium availability can vary", "https://wavespb.com/"),
     Channel("WAVES Free Streaming", "Streaming", "Public broadcaster movies, shows and live channels; some titles may be premium", "https://wavespb.com/"),
     Channel("Amazon MX Player / Prime Video", "Streaming", "Browse free ad-supported movies and shows where available", "https://www.primevideo.com/"),
@@ -387,12 +399,24 @@ private fun GoldTvHome(context: Context) {
     var favourites by remember { mutableStateOf(prefs.getStringSet("favourites", emptySet())?.toSet() ?: emptySet()) }
     var selectedCategory by remember { mutableStateOf("All") }
     var search by remember { mutableStateOf("") }
-    var notice by remember { mutableStateOf("Choose a title to open its official source.") }
+    var notice by remember { mutableStateOf("Choose a title to watch inside the app.") }
+    var selectedChannel by remember { mutableStateOf<Channel?>(null) }
 
     val visible = catalogue.filter { channel ->
         (selectedCategory == "All" || (selectedCategory == "My List" && channel.id in favourites) ||
             (selectedCategory != "My List" && (selectedCategory == channel.category || (selectedCategory == "Live TV" && channel.category == "News")))) &&
             (search.isBlank() || channel.title.contains(search, true) || channel.description.contains(search, true) || channel.category.contains(search, true))
+    }
+
+    if (selectedChannel != null) {
+        val channel = selectedChannel!!
+        InAppStreamingScreen(
+            title = channel.title,
+            description = channel.description,
+            url = channel.url,
+            onClose = { selectedChannel = null }
+        )
+        return
     }
 
     Column(
@@ -468,12 +492,8 @@ private fun GoldTvHome(context: Context) {
                         channel = channel,
                         favourite = channel.id in favourites,
                         onOpen = {
-                            try {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(channel.url)))
-                                notice = "Opening " + channel.title + " in its official source."
-                            } catch (_: ActivityNotFoundException) {
-                                notice = "No app could open this source. Please check your browser."
-                            }
+                            selectedChannel = channel
+                            notice = "Opening " + channel.title + " inside SHREE REEMPU DEVI TV."
                         },
                         onFavourite = {
                             val updated = favourites.toMutableSet()
