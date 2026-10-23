@@ -8,6 +8,27 @@ import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.graphicsLayer
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -77,7 +98,221 @@ private val catalogue = listOf(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { MaterialTheme { GoldTvHome(this) } }
+        setContent { MaterialTheme { GoldTvApp(this) } }
+    }
+}
+
+
+@Composable
+private fun GoldTvApp(context: Context) {
+    var showIntro by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        delay(3400)
+        showIntro = false
+    }
+    Box(Modifier.fillMaxSize().background(Background)) {
+        GoldTvHome(context)
+        AnimatedVisibility(
+            visible = showIntro,
+            enter = fadeIn(tween(350)),
+            exit = fadeOut(tween(650))
+        ) {
+            GoldSplash()
+        }
+    }
+}
+
+@Composable
+private fun GoldSplash() {
+    val transition = rememberInfiniteTransition(label = "gold_splash")
+    val glow by transition.animateFloat(
+        initialValue = 0.48f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(1350, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "glow"
+    )
+    val drift by transition.animateFloat(
+        initialValue = -5f,
+        targetValue = 5f,
+        animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "drift"
+    )
+    var revealed by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { delay(180); revealed = true }
+
+    Box(
+        Modifier.fillMaxSize().background(
+            Brush.radialGradient(
+                colors = listOf(Color(0xFF30240E), Color(0xFF111116), Color(0xFF050608)),
+                radius = 1150f
+            )
+        ),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(Modifier.fillMaxSize()) {
+            val points = listOf(
+                Offset(size.width * .12f, size.height * .18f),
+                Offset(size.width * .82f, size.height * .22f),
+                Offset(size.width * .18f, size.height * .78f),
+                Offset(size.width * .88f, size.height * .76f),
+                Offset(size.width * .69f, size.height * .12f),
+                Offset(size.width * .32f, size.height * .87f)
+            )
+            points.forEachIndexed { index, point ->
+                drawCircle(
+                    color = Gold.copy(alpha = if (index % 2 == 0) glow * .46f else glow * .22f),
+                    radius = if (index % 2 == 0) 2.4.dp.toPx() else 1.5.dp.toPx(),
+                    center = point
+                )
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(24.dp)
+        ) {
+            AnimatedVisibility(
+                visible = revealed,
+                enter = scaleIn(initialScale = .62f, animationSpec = tween(850, easing = FastOutSlowInEasing)) +
+                    fadeIn(tween(750))
+            ) {
+                Box(
+                    Modifier.size(176.dp).graphicsLayer {
+                        translationY = drift
+                        scaleX = .98f + glow * .025f
+                        scaleY = .98f + glow * .025f
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Canvas(Modifier.fillMaxSize()) {
+                        drawCircle(
+                            color = Gold.copy(alpha = .10f + glow * .08f),
+                            radius = size.minDimension * .47f,
+                        )
+                        drawCircle(
+                            color = Gold.copy(alpha = .35f + glow * .45f),
+                            radius = size.minDimension * .46f,
+                            style = Stroke(width = 1.4.dp.toPx())
+                        )
+                        drawCircle(
+                            color = Color.White.copy(alpha = .10f),
+                            radius = size.minDimension * .405f,
+                            style = Stroke(width = 1.dp.toPx())
+                        )
+                    }
+                    TvMark(Modifier.size(94.dp), glow)
+                }
+            }
+            Spacer(Modifier.height(26.dp))
+            AnimatedVisibility(
+                visible = revealed,
+                enter = fadeIn(tween(900, delayMillis = 260)) +
+                    slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(900, delayMillis = 260, easing = FastOutSlowInEasing))
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        "I N S A N E",
+                        color = Color.White,
+                        fontSize = 27.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 6.sp
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "G O L D   T V",
+                        color = Gold,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 4.sp
+                    )
+                    Spacer(Modifier.height(19.dp))
+                    Box(
+                        Modifier.width(116.dp).height(2.dp)
+                            .background(Brush.horizontalGradient(listOf(Color.Transparent, Gold.copy(alpha = glow), Color.Transparent)))
+                    )
+                    Spacer(Modifier.height(15.dp))
+                    Text(
+                        "YOUR ENTERTAINMENT. YOUR GOLD STANDARD.",
+                        color = Color.White.copy(alpha = .68f),
+                        fontSize = 9.sp,
+                        letterSpacing = 1.6.sp
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TvMark(modifier: Modifier = Modifier, glow: Float) {
+    Canvas(modifier) {
+        val stroke = 3.dp.toPx()
+        val left = size.width * .13f
+        val top = size.height * .24f
+        val width = size.width * .74f
+        val height = size.height * .49f
+        drawLine(
+            color = Gold.copy(alpha = .88f),
+            start = Offset(size.width * .40f, top),
+            end = Offset(size.width * .29f, size.height * .10f),
+            strokeWidth = stroke,
+            cap = androidx.compose.ui.graphics.StrokeCap.Round
+        )
+        drawLine(
+            color = Gold.copy(alpha = .88f),
+            start = Offset(size.width * .60f, top),
+            end = Offset(size.width * .71f, size.height * .10f),
+            strokeWidth = stroke,
+            cap = androidx.compose.ui.graphics.StrokeCap.Round
+        )
+        drawRoundRect(
+            color = Gold.copy(alpha = .92f),
+            topLeft = Offset(left, top),
+            size = Size(width, height),
+            cornerRadius = CornerRadius(10.dp.toPx()),
+            style = Stroke(width = stroke)
+        )
+        drawRoundRect(
+            brush = Brush.linearGradient(
+                colors = listOf(Color(0xFF45330F).copy(alpha = .85f), Color(0xFF17130A).copy(alpha = .9f))
+            ),
+            topLeft = Offset(left + stroke * 1.5f, top + stroke * 1.5f),
+            size = Size(width - stroke * 3f, height - stroke * 3f),
+            cornerRadius = CornerRadius(7.dp.toPx())
+        )
+        drawRoundRect(
+            color = Gold.copy(alpha = .45f + glow * .5f),
+            topLeft = Offset(left + width * .12f, top + height * .13f),
+            size = Size(width * .76f, height * .70f),
+            cornerRadius = CornerRadius(4.dp.toPx()),
+            style = Stroke(width = 1.4.dp.toPx())
+        )
+        drawCircle(
+            color = Gold.copy(alpha = glow),
+            radius = 2.5.dp.toPx(),
+            center = Offset(left + width * .87f, top + height * .83f)
+        )
+        drawLine(
+            color = Gold.copy(alpha = .9f),
+            start = Offset(size.width * .42f, top + height + 4.dp.toPx()),
+            end = Offset(size.width * .36f, size.height * .82f),
+            strokeWidth = stroke,
+            cap = androidx.compose.ui.graphics.StrokeCap.Round
+        )
+        drawLine(
+            color = Gold.copy(alpha = .9f),
+            start = Offset(size.width * .58f, top + height + 4.dp.toPx()),
+            end = Offset(size.width * .64f, size.height * .82f),
+            strokeWidth = stroke,
+            cap = androidx.compose.ui.graphics.StrokeCap.Round
+        )
+        drawLine(
+            color = Gold.copy(alpha = .9f),
+            start = Offset(size.width * .27f, size.height * .84f),
+            end = Offset(size.width * .73f, size.height * .84f),
+            strokeWidth = stroke,
+            cap = androidx.compose.ui.graphics.StrokeCap.Round
+        )
     }
 }
 
