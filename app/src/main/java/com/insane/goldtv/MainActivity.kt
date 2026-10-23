@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.sp
 private val Gold = Color(0xFFFFD36A)
 private val Background = Color(0xFF090A0D)
 private val Panel = Color(0xFF17191F)
-private val Categories = listOf("All", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Music", "Learning", "My List")
+private val Categories = listOf("All", "Live TV", "News", "Sports", "Devotional", "Cartoons", "Hindi Kids", "Anime", "Movies", "Free Movies", "Family Movies", "Classics", "Music", "Learning", "My List")
 
 private data class Channel(val title: String, val category: String, val description: String, val url: String) {
     val id: String get() = title
@@ -126,7 +126,27 @@ private val catalogue = listOf(
     Channel("Pogo", "Cartoons", "Official kids entertainment clips; availability varies", "https://www.youtube.com/results?search_query=Pogo+official+cartoons"),
     Channel("Cartoon Network India", "Cartoons", "Official cartoon clips and kids entertainment", "https://www.youtube.com/results?search_query=Cartoon+Network+India+official"),
     Channel("Prasar Bharati Archives", "Movies", "Classic Indian television and archive programmes", "https://www.youtube.com/@PrasarBharatiArchives"),
-    Channel("Internet Archive Documentaries", "Movies", "Documentaries and films; check individual rights and availability", "https://archive.org/details/movies")
+    Channel("Internet Archive Documentaries", "Movies", "Documentaries and films; check individual rights and availability", "https://archive.org/details/movies"),
+    Channel("WAVES by Prasar Bharati", "Free Movies", "Public broadcaster streaming hub; free and premium availability can vary", "https://wavespb.com/"),
+    Channel("ZEE5 Movies", "Free Movies", "Browse official movie catalogue and check which titles are marked free", "https://www.zee5.com/movies"),
+    Channel("Prime Video India", "Free Movies", "Browse licensed films; only some titles may be free with ads", "https://www.primevideo.com/"),
+    Channel("Rajshri Movies", "Free Movies", "Official studio catalogue with selected full films; title availability varies", "https://www.youtube.com/@Rajshri"),
+    Channel("Shemaroo Movies", "Free Movies", "Official distributor catalogue with selected full films", "https://www.youtube.com/results?search_query=Shemaroo+Movies+official+full+movie"),
+    Channel("Goldmines", "Free Movies", "Official distributor channel for selected Hindi and dubbed films", "https://www.youtube.com/@GoldminesTelefilms"),
+    Channel("Ultra Movie Parlour", "Free Movies", "Official Ultra film catalogue; availability varies by title", "https://www.youtube.com/results?search_query=Ultra+Movie+Parlour+official+full+movie"),
+    Channel("NH Studioz", "Free Movies", "Official studio source for selected Indian films", "https://www.youtube.com/results?search_query=NH+Studioz+official+full+movie"),
+    Channel("FilmRise Movies", "Free Movies", "Official distributor channel; catalogue and regional access vary", "https://www.youtube.com/@FilmRiseMovies"),
+    Channel("Classic Hindi Movies", "Classics", "Search for licensed classic Hindi films from official rights holders", "https://www.youtube.com/results?search_query=classic+Hindi+full+movie+official+studio"),
+    Channel("Family Hindi Films", "Family Movies", "Find family-friendly Hindi films from official studio channels", "https://www.youtube.com/results?search_query=family+Hindi+full+movie+official+studio"),
+    Channel("Rajshri Family Films", "Family Movies", "Search Rajshri's official channel for family films and classics", "https://www.youtube.com/@Rajshri/search?query=family%20movie"),
+    Channel("Hindi Comedy Classics", "Classics", "Find classic comedy films; verify the official studio or rights-holder", "https://www.youtube.com/results?search_query=Hindi+comedy+classic+full+movie+official"),
+    Channel("Animated Family Films", "Family Movies", "Find licensed family animation and full-length animated films", "https://www.youtube.com/results?search_query=family+animated+movie+official+full+movie"),
+    Channel("Indian Film Archives", "Classics", "Browse archival films and check each item's rights and playback terms", "https://archive.org/details/feature_films"),
+    Channel("National Film Board Films", "Free Movies", "Official films and documentaries from a public film producer", "https://www.youtube.com/@NFB"),
+    Channel("Public Domain Classics", "Classics", "Explore archive films and verify rights on each individual title", "https://archive.org/details/feature_films"),
+    Channel("Hindi Inspirational Films", "Family Movies", "Search for official inspirational and family movie releases", "https://www.youtube.com/results?search_query=Hindi+inspirational+full+movie+official"),
+    Channel("Kids Animation Movies", "Family Movies", "Find age-appropriate animated films from official publishers", "https://www.youtube.com/results?search_query=kids+animated+movie+official+full+movie"),
+    Channel("Free Movie Discovery", "Free Movies", "Search for legally available full movies from studios and rights holders", "https://www.youtube.com/results?search_query=official+full+movie+Hindi+studio")
 )
 
 class MainActivity : ComponentActivity() {
