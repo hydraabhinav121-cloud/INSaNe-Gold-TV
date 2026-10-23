@@ -54,6 +54,8 @@ fun InAppStreamingScreen(
         path.endsWith(".m3u8") || path.endsWith(".mp4") || path.endsWith(".mpd")
     }
     var webView by remember { mutableStateOf<WebView?>(null) }
+    var pageProgress by remember { mutableStateOf(0) }
+    var pageLoading by remember { mutableStateOf(!directMedia) }
 
     BackHandler {
         val page = webView
@@ -78,11 +80,16 @@ fun InAppStreamingScreen(
                 if (!directMedia && page != null && page.canGoBack()) page.goBack() else onClose()
             }, modifier = Modifier.focusable()) { Text("‹ Back") }
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, color = StreamingGold, fontSize = 19.sp, style = MaterialTheme.typography.titleMedium)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(title, color = StreamingGold, fontSize = 19.sp, style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                    Box(Modifier.background(Color(0xFF18392A), RoundedCornerShape(50)).padding(horizontal = 8.dp, vertical = 4.dp)) {
+                        Text(if (directMedia) "PLAYER" else if (pageLoading) "LOADING $pageProgress%" else "SOURCE OPEN", color = Color(0xFF9CF0B5), fontSize = 9.sp)
+                    }
+                }
                 Text(description, color = Color.LightGray, fontSize = 11.sp, maxLines = 2)
             }
             if (!directMedia) {
-                Button(onClick = { webView?.reload() }, modifier = Modifier.focusable()) { Text("Refresh") }
+                Button(onClick = { pageLoading = true; pageProgress = 0; webView?.reload() }, modifier = Modifier.focusable()) { Text("Refresh") }
             }
         }
 
@@ -127,8 +134,22 @@ fun InAppStreamingScreen(
                         settings.mediaPlaybackRequiresUserGesture = false
                         settings.javaScriptCanOpenWindowsAutomatically = false
                         settings.setSupportMultipleWindows(false)
-                        webChromeClient = WebChromeClient()
+                        settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+                        webChromeClient = object : WebChromeClient() {
+                            override fun onProgressChanged(view: WebView, newProgress: Int) {
+                                pageProgress = newProgress
+                                pageLoading = newProgress < 100
+                            }
+                        }
                         webViewClient = object : WebViewClient() {
+                            override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
+                                pageLoading = true
+                                pageProgress = 0
+                            }
+                            override fun onPageFinished(view: WebView, url: String?) {
+                                pageLoading = false
+                                pageProgress = 100
+                            }
                             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                                 val scheme = request.url.scheme?.lowercase()
                                 // Keep normal web navigation inside this screen; never launch another app.
@@ -153,11 +174,21 @@ fun InAppStreamingScreen(
                 modifier = Modifier.fillMaxSize().weight(1f).background(Color.Black, RoundedCornerShape(10.dp))
             )
         }
-        Text(
-            if (directMedia) "Use the TV remote to control playback." else "This page stays inside the app. Some providers may block embedded playback or require their own sign-in/subscription.",
-            color = Color.Gray,
-            fontSize = 11.sp,
-            modifier = Modifier.padding(horizontal = 4.dp)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().background(Color(0xFF17191F), RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("●", color = if (pageLoading && !directMedia) StreamingGold else Color(0xFF79D99A), fontSize = 10.sp)
+            Text(
+                if (directMedia) "Built-in playback. Press OK to show player controls."
+                else if (pageLoading) "Loading the official source inside the app…"
+                else "No ads are added by this app. Provider ads may still appear during live streams.",
+                color = Color.LightGray,
+                fontSize = 11.sp,
+                modifier = Modifier.weight(1f)
+            )
+            Text("IN-APP", color = StreamingGold, fontSize = 9.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+        }
     }
 }
