@@ -614,7 +614,7 @@ private fun ChannelRow(channel: Channel, favourite: Boolean, onOpen: () -> Unit,
         modifier = Modifier.fillMaxWidth().height(62.dp).clip(RoundedCornerShape(13.dp))
             .background(if (focused) Color(0xFF302711) else Panel)
             .border(if (focused) 2.dp else 1.dp, if (focused) Gold else Color(0xFF34363D), RoundedCornerShape(13.dp))
-            .onFocusChanged { focused = it.isFocused }.clickable { onOpen() }
+            .onFocusChanged { focused = it.hasFocus }.clickable { onOpen() }
             .padding(horizontal = 14.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
