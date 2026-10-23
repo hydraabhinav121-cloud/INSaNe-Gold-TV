@@ -316,6 +316,19 @@ private fun GoldSplash() {
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = 9.sp
                     )
+                    Spacer(Modifier.height(15.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        listOf("CINEMA", "LIVE", "MUSIC").forEach { label ->
+                            Box(
+                                Modifier.clip(RoundedCornerShape(50))
+                                    .background(Color(0xFF2B2416))
+                                    .border(1.dp, Gold.copy(alpha = .65f), RoundedCornerShape(50))
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text(label, color = Gold, fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.2.sp)
+                            }
+                        }
+                    }
                     Spacer(Modifier.height(19.dp))
                     Box(
                         Modifier.width(116.dp).height(2.dp)
@@ -488,7 +501,19 @@ private fun GoldTvHome(context: Context) {
                 Spacer(Modifier.height(5.dp))
                 Text("Official sources • Family-friendly discovery • No app subscription", color = Color.LightGray, fontSize = 13.sp)
             }
-            Text("✦", color = Gold, fontSize = 42.sp)
+            Spacer(Modifier.width(14.dp))
+            Box(
+                Modifier.width(118.dp).height(90.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Brush.radialGradient(listOf(Color(0xFF574019), Color(0xFF211B10), Color(0xFF111318))))
+                    .border(1.dp, Gold.copy(alpha = .65f), RoundedCornerShape(14.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    TvMark(Modifier.size(58.dp), glow = .85f)
+                    Text("PREMIUM VIEW", color = Gold, fontSize = 8.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                }
+            }
         }
         Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -523,7 +548,7 @@ private fun GoldTvHome(context: Context) {
         Spacer(Modifier.height(6.dp))
         Text(notice, color = Gold, fontSize = 11.sp, maxLines = 1)
         Spacer(Modifier.height(3.dp))
-        Text("Free availability varies by region. Some providers may show ads, require an account, or change their catalogue.", color = Color(0xFF999999), fontSize = 10.sp)
+        Text("No ads are inserted by this app. Official providers may still show their own ads or require a subscription.", color = Color(0xFF999999), fontSize = 10.sp)
     }
 }
 
