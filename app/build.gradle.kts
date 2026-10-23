@@ -4,8 +4,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-val tmdbApiKey = providers.gradleProperty("TMDB_API_KEY").orElse(providers.environmentVariable("TMDB_API_KEY")).orElse("").get()
-
 android {
     namespace = "com.insane.goldtv"
     compileSdk = 35
@@ -15,13 +13,11 @@ android {
         minSdk = 23
         targetSdk = 28
         versionCode = 1
-        versionName = "1.1"
-        buildConfigField("String", "TMDB_API_KEY", "\"${tmdbApiKey}\"")
+        versionName = "1.2"
     }
 
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -38,7 +34,6 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
-    implementation("io.coil-kt:coil-compose:2.7.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
 
