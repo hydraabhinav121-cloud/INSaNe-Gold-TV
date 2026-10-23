@@ -14,7 +14,6 @@ import secrets
 import uuid
 from datetime import datetime, timezone
 from typing import Any
-from urllib.parse import quote
 
 import boto3
 from botocore.config import Config
@@ -30,7 +29,7 @@ R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID", "").strip()
 R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY", "").strip()
 R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME", "").strip()
 STREAM_API_TOKEN = os.getenv("STREAM_API_TOKEN", "").strip()
-MAX_VIDEO_BYTES = int(os.getenv("MAX_VIDEO_BYTES", str(20 * 1024 * 1024 * 1024)))
+MAX_VIDEO_BYTES = int(os.getenv("MAX_VIDEO_BYTES", "5000000000"))
 UPLOAD_URL_TTL = 15 * 60
 PLAY_URL_TTL = 4 * 60 * 60
 ALLOWED_EXTENSIONS = {".mp4", ".m4v", ".mov", ".mkv", ".webm", ".avi", ".mpeg", ".mpg", ".ts"}
@@ -109,10 +108,6 @@ class UploadRequest(BaseModel):
     sizeBytes: int = Field(gt=0)
 
 
-class CompleteRequest(BaseModel):
-    pass
-
-
 @app.get("/health")
 def health():
     return {"ok": True, "service": APP_NAME, "storageConfigured": bool(
@@ -159,8 +154,12 @@ def list_videos(_: str = Depends(require_token)):
 
 @app.post("/api/uploads")
 def create_upload(body: UploadRequest, _: str = Depends(require_token)):
-    filename = safe_filename(body.filename)
-    extension = os.path.splitext(filename)[1].lower()
+    original_filename = safe_filename(body.filename)
+    extension = os.path.splitext(original_filename)[1].lower()
+    requested_title = safe_filename(body.title) if body.title and body.title.strip() else os.path.splitext(original_filename)[0]
+    if os.path.splitext(requested_title)[1].lower() in ALLOWED_EXTENSIONS:
+        requested_title = os.path.splitext(requested_title)[0]
+    filename = f"{requested_title[:140]}{extension}"
     if extension not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=415, detail="Unsupported video file type.")
     if body.sizeBytes > MAX_VIDEO_BYTES:
