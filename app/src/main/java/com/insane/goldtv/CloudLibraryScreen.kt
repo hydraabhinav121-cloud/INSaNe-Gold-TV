@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -144,6 +145,7 @@ fun CloudLibraryScreen(context: Context) {
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Private cloud token") },
             placeholder = { Text("STREAM_API_TOKEN") },
+            visualTransformation = PasswordVisualTransformation(),
             singleLine = true
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
