@@ -49,8 +49,6 @@ jobs:
           "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Build debug APK
-        env:
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: gradle assembleDebug
 
       - name: Upload APK artifact
