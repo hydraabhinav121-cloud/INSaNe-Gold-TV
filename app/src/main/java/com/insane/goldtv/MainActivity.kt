@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.content.Context
+import android.app.ActivityManager
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -459,11 +461,17 @@ private fun GoldTvHome(context: Context) {
     val searchFocusRequester = remember { FocusRequester() }
     var notice by remember { mutableStateOf("Choose a title to watch inside the app.") }
     var selectedChannel by remember { mutableStateOf<Channel?>(null) }
+    var showDiagnostics by remember { mutableStateOf(false) }
 
     val visible = catalogue.filter { channel ->
         (selectedCategory == "All" || (selectedCategory == "My List" && channel.id in favourites) ||
             (selectedCategory != "My List" && (selectedCategory == channel.category || (selectedCategory == "Live TV" && channel.category == "News")))) &&
             (search.isBlank() || channel.title.contains(search, true) || channel.description.contains(search, true) || channel.category.contains(search, true))
+    }
+
+    if (showDiagnostics) {
+        PerformanceDiagnosticsScreen(context = context, onBack = { showDiagnostics = false })
+        return
     }
 
     if (selectedChannel != null) {
@@ -508,6 +516,10 @@ private fun GoldTvHome(context: Context) {
                 selectedSection = "MY LIST"
                 selectedCategory = "My List"
                 search = ""
+            }
+            NavTile("DIAGNOSTICS", selectedSection == "DIAGNOSTICS") {
+                selectedSection = "DIAGNOSTICS"
+                showDiagnostics = true
             }
         }
         Spacer(Modifier.height(8.dp))
@@ -604,6 +616,83 @@ private fun GoldTvHome(context: Context) {
         Text(notice, color = Gold, fontSize = 11.sp, maxLines = 1)
         Spacer(Modifier.height(3.dp))
         Text("No ads are inserted by this app. Official providers may still show their own ads or require a subscription.", color = Color(0xFF999999), fontSize = 10.sp)
+    }
+}
+
+@Composable
+private fun PerformanceDiagnosticsScreen(context: Context, onBack: () -> Unit) {
+    val display = context.resources.displayMetrics
+    val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    val memoryInfo = remember { ActivityManager.MemoryInfo() }
+    var checkResult by remember { mutableStateOf("Run a quick check to measure catalogue filtering and refresh memory readings.") }
+    var filterTimeMs by remember { mutableStateOf<Long?>(null) }
+    var freeHeapMb by remember { mutableStateOf((Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory()) / (1024L * 1024L)) }
+    var availableRamMb by remember { mutableStateOf<Long?>(null) }
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .background(Brush.verticalGradient(listOf(Color(0xFF242016), Background)))
+            .padding(horizontal = 30.dp, vertical = 18.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.weight(1f)) {
+                Text("PERFORMANCE DIAGNOSTICS", color = Gold, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
+                Text("Local checks only • No extra permissions", color = Color.LightGray, fontSize = 12.sp)
+            }
+            NavTile("BACK", false, onBack)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            DiagnosticCard("ANDROID", "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})", Modifier.weight(1f))
+            DiagnosticCard("SCREEN", "${display.widthPixels} × ${display.heightPixels} px", Modifier.weight(1f))
+            DiagnosticCard("CATALOGUE", "${catalogue.size} sources", Modifier.weight(1f))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            DiagnosticCard("APP HEAP AVAILABLE", "${freeHeapMb} MB approx.", Modifier.weight(1f))
+            DiagnosticCard("DEVICE RAM AVAILABLE", availableRamMb?.let { "${it} MB" } ?: "Run quick check", Modifier.weight(1f))
+            DiagnosticCard("FILTER CHECK", filterTimeMs?.let { "${it} ms" } ?: "Not run yet", Modifier.weight(1f))
+        }
+        Box(
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
+                .background(Panel).border(1.dp, Color(0xFF6F5726), RoundedCornerShape(14.dp))
+                .padding(14.dp)
+        ) {
+            Text(checkResult, color = Color.White, fontSize = 14.sp)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            NavTile("RUN QUICK CHECK", false) {
+                val start = System.nanoTime()
+                repeat(5) {
+                    catalogue.filter { it.title.contains("a", ignoreCase = true) || it.description.contains("a", ignoreCase = true) }
+                }
+                filterTimeMs = (System.nanoTime() - start) / 1_000_000L
+                freeHeapMb = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory()) / (1024L * 1024L)
+                activityManager.getMemoryInfo(memoryInfo)
+                availableRamMb = memoryInfo.availMem / (1024L * 1024L)
+                checkResult = "Quick check complete. Catalogue filter benchmark: ${filterTimeMs} ms for 5 passes. This is an in-app microbenchmark, not a full TV frame-rate or network test."
+            }
+            NavTile("TEST FOCUS", false) {
+                checkResult = "Focus test ready: use the TV remote's D-pad to move between BACK, RUN QUICK CHECK and TEST FOCUS. The focused control should show a gold highlight."
+            }
+        }
+        Text("If scrolling still stutters, note the filter time and available RAM, then test with other apps closed. Network buffering and YouTube webpage performance are separate from this local check.", color = Color(0xFFAAAAAA), fontSize = 12.sp)
+    }
+}
+
+@Composable
+private fun DiagnosticCard(title: String, value: String, modifier: Modifier = Modifier) {
+    var focused by remember { mutableStateOf(false) }
+    Column(
+        modifier = modifier.height(88.dp).clip(RoundedCornerShape(13.dp))
+            .background(if (focused) Color(0xFF302711) else Panel)
+            .border(if (focused) 2.dp else 1.dp, if (focused) Gold else Color(0xFF393B42), RoundedCornerShape(13.dp))
+            .onFocusChanged { focused = it.isFocused }
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(title, color = Gold, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(7.dp))
+        Text(value, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
     }
 }
 
