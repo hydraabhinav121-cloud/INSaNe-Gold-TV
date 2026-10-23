@@ -63,6 +63,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -210,7 +212,7 @@ class MainActivity : ComponentActivity() {
 private fun GoldTvApp(context: Context) {
     var showIntro by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
-        delay(3400)
+        delay(1600)
         showIntro = false
     }
     Box(Modifier.fillMaxSize().background(Background)) {
@@ -227,25 +229,10 @@ private fun GoldTvApp(context: Context) {
 
 @Composable
 private fun GoldSplash() {
-    val transition = rememberInfiniteTransition(label = "gold_splash")
-    val glow by transition.animateFloat(
-        initialValue = 0.48f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(1350, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "glow"
-    )
-    val drift by transition.animateFloat(
-        initialValue = -5f,
-        targetValue = 5f,
-        animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "drift"
-    )
-    val orbit by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(tween(7200, easing = LinearEasing), RepeatMode.Restart),
-        label = "orbit"
-    )
+    // Keep the opening screen lightweight on lower-powered TV hardware.
+    val glow = 0.78f
+    val drift = 0f
+    val orbit = 0f
     var revealed by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { delay(180); revealed = true }
 
@@ -466,7 +453,10 @@ private fun GoldTvHome(context: Context) {
     val prefs = remember { context.getSharedPreferences("gold_tv", Context.MODE_PRIVATE) }
     var favourites by remember { mutableStateOf(prefs.getStringSet("favourites", emptySet())?.toSet() ?: emptySet()) }
     var selectedCategory by remember { mutableStateOf("All") }
+    var selectedSection by remember { mutableStateOf("HOME") }
     var search by remember { mutableStateOf("") }
+    var searchFocused by remember { mutableStateOf(false) }
+    val searchFocusRequester = remember { FocusRequester() }
     var notice by remember { mutableStateOf("Choose a title to watch inside the app.") }
     var selectedChannel by remember { mutableStateOf<Channel?>(null) }
 
@@ -500,9 +490,31 @@ private fun GoldTvHome(context: Context) {
             Text("FREE ENTERTAINMENT HUB", color = Color.LightGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            NavTile("HOME", selectedSection == "HOME") {
+                selectedSection = "HOME"
+                selectedCategory = "All"
+                search = ""
+            }
+            NavTile("SHORTS", selectedSection == "SHORTS") {
+                selectedSection = "SHORTS"
+                selectedChannel = Channel("YouTube Shorts", "Streaming", "Short videos from YouTube; availability and controls depend on the provider.", "https://www.youtube.com/shorts")
+            }
+            NavTile("SEARCH", selectedSection == "SEARCH") {
+                selectedSection = "SEARCH"
+                searchFocusRequester.requestFocus()
+            }
+            NavTile("MY LIST", selectedSection == "MY LIST") {
+                selectedSection = "MY LIST"
+                selectedCategory = "My List"
+                search = ""
+            }
+        }
+        Spacer(Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
-                .background(Panel).border(1.dp, Color(0xFF6F5726), RoundedCornerShape(14.dp))
+                .background(Panel)
+                .border(if (searchFocused) 2.dp else 1.dp, if (searchFocused) Gold else Color(0xFF6F5726), RoundedCornerShape(14.dp))
                 .padding(horizontal = 14.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -515,7 +527,9 @@ private fun GoldTvHome(context: Context) {
                     onValueChange = { search = it },
                     singleLine = true,
                     textStyle = TextStyle(color = Color.White, fontSize = 15.sp),
-                    modifier = Modifier.fillMaxWidth().focusable()
+                    modifier = Modifier.fillMaxWidth()
+                        .focusRequester(searchFocusRequester)
+                        .onFocusChanged { searchFocused = it.isFocused }
                 )
             }
             if (search.isNotEmpty()) {
@@ -600,7 +614,7 @@ private fun ChannelRow(channel: Channel, favourite: Boolean, onOpen: () -> Unit,
         modifier = Modifier.fillMaxWidth().height(62.dp).clip(RoundedCornerShape(13.dp))
             .background(if (focused) Color(0xFF302711) else Panel)
             .border(if (focused) 2.dp else 1.dp, if (focused) Gold else Color(0xFF34363D), RoundedCornerShape(13.dp))
-            .onFocusChanged { focused = it.isFocused }.focusable().clickable { onOpen() }
+            .onFocusChanged { focused = it.isFocused }.clickable { onOpen() }
             .padding(horizontal = 14.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -613,7 +627,7 @@ private fun ChannelRow(channel: Channel, favourite: Boolean, onOpen: () -> Unit,
             Text(channel.description, color = Color.LightGray, fontSize = 10.sp, maxLines = 1)
         }
         Text(if (favourite) "★ SAVED" else "☆ SAVE", color = Gold, fontSize = 11.sp,
-            modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onFavourite() }.focusable().padding(8.dp))
+            modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onFavourite() }.padding(8.dp))
         Spacer(Modifier.width(8.dp))
         Text("OPEN  ›", color = Gold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
     }
@@ -626,8 +640,24 @@ private fun FocusTile(title: String, selected: Boolean, onClick: () -> Unit) {
         modifier = Modifier.clip(RoundedCornerShape(12.dp))
             .background(if (focused || selected) Color(0xFF3A2D12) else Panel)
             .border(if (focused || selected) 2.dp else 1.dp, if (focused || selected) Gold else Color(0xFF393B42), RoundedCornerShape(12.dp))
-            .onFocusChanged { focused = it.isFocused }.focusable().clickable { onClick() }
+            .onFocusChanged { focused = it.isFocused }.clickable { onClick() }
             .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(title, color = if (focused || selected) Gold else Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+private fun NavTile(title: String, selected: Boolean, onClick: () -> Unit) {
+    var focused by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier.clip(RoundedCornerShape(10.dp))
+            .background(if (focused || selected) Color(0xFF3A2D12) else Panel)
+            .border(if (focused || selected) 2.dp else 1.dp, if (focused || selected) Gold else Color(0xFF393B42), RoundedCornerShape(10.dp))
+            .onFocusChanged { focused = it.isFocused }
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 9.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Text(title, color = if (focused || selected) Gold else Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
