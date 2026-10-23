@@ -34,3 +34,15 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
+
+
+// Copy the user's uploaded artwork into Android resources before resource merging.
+val prepareAppIcon by tasks.registering(Copy::class) {
+    from("src/main/Screenshot_20261023_202055.jpg")
+    into("src/main/res/drawable-nodpi")
+    rename { "app_icon.jpg" }
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(prepareAppIcon)
+}
